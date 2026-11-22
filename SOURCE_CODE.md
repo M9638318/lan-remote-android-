@@ -1,5 +1,9 @@
 # LAN Touchpad — complete source listing
 
+> **注意**：本文件是源码归档快照，Gradle **不会**读取 Markdown 中的内容。
+> 实际可编译源码位于 `android/`（Android 端）与 `windows/`（Windows 端）。
+> 修改功能请直接改那些目录下的文件，不要只改这里，否则 APK 不会变化。
+
 Every project text file is reproduced below in its own independent fenced code block. The project ZIP contains the same directory structure.
 
 ## `.github/workflows/build.yml`

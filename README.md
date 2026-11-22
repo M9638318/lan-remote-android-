@@ -1,5 +1,15 @@
 # LAN Touchpad
 
+> **构建说明（重要）**
+>
+> - 可编译的 Android 工程在 **`android/`**（包名 `com.example.lantouchpad`，Gradle 8.9 / AGP 8.7.2 / Kotlin 2.1.10 / compileSdk 35），Windows 服务端在 **`windows/`**。
+> - 仓库根目录的 `app/`、`build.gradle`、`settings.gradle`、`gradle.properties` 是早期精简版（`com.lanremote.app`）遗留，**已弃用，不参与 CI 构建**，仅为保留 v1 历史。
+> - 每次 `push` 到任意分支，GitHub Actions 都会构建 APK：产物在对应 run 的 **Artifacts**（`LAN-Touchpad-v<版本>-<commit>`），推送到 `main` 时还会更新 **`latest` 预发布**（`LAN-Touchpad-debug-latest.apk`）。
+> - 需要正式版本时打一个 `v*` 标签（例如 `v1.1.0`），CI 会自动创建对应 Release 并附上 APK。**不要再手动往 Release 上传旧 APK**。
+> - 修改 Android 功能必须改 `android/app/src/main/` 下的 `.kt` / XML，并递增 `android/app/build.gradle` 里的 `versionCode` / `versionName`；`SOURCE_CODE.md` 只是源码归档快照，Gradle 不会读取它。
+> - 当前版本：`versionCode 2` / `versionName 1.1.0`（debug 包，使用 debug 签名）。
+
+
 一个纯局域网的 Android → Windows 远程触控板/虚拟手柄工具。无云服务、无账号、无数据库。
 
 ## 目录

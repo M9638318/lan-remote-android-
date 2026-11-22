@@ -1,6 +1,10 @@
-# 极简 APK 生成指南（免装 Android Studio）
+# 极简 APK 生成指南
 
-1. 在 GitHub 上新建一个仓库（Public 或 Private 均可），例如 `lan-remote-android`。
-2. 解压本压缩包，将内部所有文件（包含 `.github/workflows/build.yml`）上传到仓库根目录。
-3. 提交后进入仓库的 **Actions** 标签页，等待 `Build LanRemote APK` 运行完成（约 1~2 分钟）。
-4. 点进构建记录，在底部 **Artifacts** 下载 `LanRemote-debug-apk`，解压即可得到 `app-debug.apk` 安装到平板。
+1. 把项目推送到 GitHub 仓库（保持 `android/`、`.github/workflows/build.yml` 的路径不变）。
+2. 进入仓库 **Actions** 标签页，等待 `Build LAN Touchpad APK` 完成（首次约 2~5 分钟，需下载 Gradle 与 Android SDK 35）。
+3. 在本次 run 底部 **Artifacts** 下载 `LAN-Touchpad-v<版本>-<commit>`，解压得到 APK 安装到平板。
+4. 或者到 **Releases → latest（预发布）** 下载 `LAN-Touchpad-debug-latest.apk`（main 分支每次构建自动覆盖）。
+
+手动打 `v*` 标签会生成一个带 APK 的正式 Release。
+
+详细构建说明见 [APK_BUILD.md](APK_BUILD.md)。

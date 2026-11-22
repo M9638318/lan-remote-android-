@@ -8,6 +8,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import okio.ByteString.Companion.toByteString
 import okio.ByteString
 import org.json.JSONArray
 import org.json.JSONObject
@@ -298,7 +299,7 @@ class WebSocketManager(private val callback: Callback) {
                             .put(buffer, 0, read)
                             .array()
 
-                        ws.send(ByteString.of(packet, 0, packet.size))
+                        ws.send(packet.toByteString(0, packet.size))
                         chunkIndex++
                         sentBytes += read
 

@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0D0F14"
+    android:keepScreenOn="true">
+
+    <com.lanremote.app.ScreenView
+        android:id="@+id/screenView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.lanremote.app.TouchpadView
+        android:id="@+id/touchpadView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/gamepadOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="52dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnLT"
+                android:layout_width="72dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="8dp"
+                android:background="#88222834"
+                android:text="LT"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btnLB"
+                android:layout_width="72dp"
+                android:layout_height="44dp"
+                android:background="#88222834"
+                android:text="LB"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="52dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnRB"
+                android:layout_width="72dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="8dp"
+                android:background="#88222834"
+                android:text="RB"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btnRT"
+                android:layout_width="72dp"
+                android:layout_height="44dp"
+                android:background="#88222834"
+                android:text="RT"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <com.lanremote.app.JoystickView
+            android:id="@+id/leftJoystick"
+            android:layout_width="176dp"
+            android:layout_height="176dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="76dp"
+                android:layout_height="38dp"
+                android:layout_marginEnd="14dp"
+                android:background="#88222834"
+                android:text="BACK"
+                android:textColor="#D0D6E2"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnStart"
+                android:layout_width="76dp"
+                android:layout_height="38dp"
+                android:background="#88222834"
+                android:text="START"
+                android:textColor="#D0D6E2"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <com.lanremote.app.JoystickView
+            android:id="@+id/rightJoystick"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="200dp"
+            android:layout_marginBottom="12dp" />
+
+        <RelativeLayout
+            android:layout_width="172dp"
+            android:layout_height="172dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="12dp">
+
+            <Button
+                android:id="@+id/btnY"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="#AA3A3516"
+                android:text="Y"
+                android:textColor="#FFD54F"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnX"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="#AA162E45"
+                android:text="X"
+                android:textColor="#4FC3F7"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnB"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="#AA451A1A"
+                android:text="B"
+                android:textColor="#EF5350"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnA"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="#AA183B23"
+                android:text="A"
+                android:textColor="#66BB6A"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/topControlBar"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="8dp"
+        android:background="#D9191D26"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="● 未连接"
+            android:textColor="#FF6B6B"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnConnect"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginEnd="6dp"
+            android:background="#2A3142"
+            android:minWidth="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="连接"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnQuality"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginEnd="6dp"
+            android:background="#2A3142"
+            android:minWidth="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="画质:标清"
+            android:textColor="#00E5FF"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnFps"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginEnd="6dp"
+            android:background="#2A3142"
+            android:minWidth="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="15 FPS"
+            android:textColor="#00E5FF"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnMode"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginEnd="6dp"
+            android:background="#2A3142"
+            android:minWidth="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="触控板"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnKeyboard"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginEnd="6dp"
+            android:background="#2A3142"
+            android:minWidth="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="键盘"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnFile"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginEnd="6dp"
+            android:background="#2A3142"
+            android:minWidth="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="文件"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnCollapseBar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="#333B4F"
+            android:minWidth="0dp"
+            android:padding="0dp"
+            android:text="▲"
+            android:textColor="#B0BEC5"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/btnExpandBar"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="4dp"
+        android:background="#BB191D26"
+        android:gravity="center"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:text="▼ 控制中心"
+        android:textColor="#00E5FF"
+        android:textSize="11sp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/streamPresetPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="58dp"
+        android:background="#EB161A22"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="画面质量档位"
+            android:textColor="#9AA5B8"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnQualitySaver"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:layout_marginEnd="6dp"
+                android:background="#262C3A"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="省流 288p"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnQualityStandard"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:layout_marginEnd="6dp"
+                android:background="#007A8C"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="标清 720p"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnQualityHd"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:background="#262C3A"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="高清 1080p"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="帧率档位"
+            android:textColor="#9AA5B8"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnFps15"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:layout_marginEnd="6dp"
+                android:background="#007A8C"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:text="15 FPS (省电)"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnFps30"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:layout_marginEnd="6dp"
+                android:background="#262C3A"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:text="30 FPS (流畅)"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnFps60"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:background="#262C3A"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:text="60 FPS (高刷)"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="14dp"
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/shortcutFolderPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="#E6191D26"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/scWinD"
+                    android:layout_width="76dp"
+                    android:layout_height="34dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="#2A3142"
+                    android:text="桌面"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/scAltTab"
+                    android:layout_width="76dp"
+                    android:layout_height="34dp"
+                    android:background="#2A3142"
+                    android:text="切窗口"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/scCopy"
+                    android:layout_width="76dp"
+                    android:layout_height="34dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="#2A3142"
+                    android:text="Ctrl+C"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/scPaste"
+                    android:layout_width="76dp"
+                    android:layout_height="34dp"
+                    android:background="#2A3142"
+                    android:text="Ctrl+V"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/scUndo"
+                    android:layout_width="76dp"
+                    android:layout_height="34dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="#2A3142"
+                    android:text="Ctrl+Z"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/scEsc"
+                    android:layout_width="76dp"
+                    android:layout_height="34dp"
+                    android:background="#2A3142"
+                    android:text="ESC"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/scTaskMgr"
+                    android:layout_width="76dp"
+                    android:layout_height="34dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="#2A3142"
+                    android:text="任务管理"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/scWinKey"
+                    android:layout_width="76dp"
+                    android:layout_height="34dp"
+                    android:background="#2A3142"
+                    android:text="Win 键"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnShortcutToggle"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:background="#CC007A8C"
+            android:text="快捷"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/keyboardInputBar"
+        android:layout_width="420dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="#EB191D26"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/etTextInput"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:background="#262C3A"
+            android:hint="输入要发送到电脑的文字..."
+            android:imeOptions="actionSend"
+            android:inputType="text"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:singleLine="true"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#78849E"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/btnSendText"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:layout_marginStart="6dp"
+            android:background="#007A8C"
+            android:minWidth="0dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="发送"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnSendBackspace"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:layout_marginStart="6dp"
+            android:background="#333B4F"
+            android:minWidth="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="⌫"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/btnSendEnter"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:layout_marginStart="6dp"
+            android:background="#333B4F"
+            android:minWidth="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="↵"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/btnCloseKeyboardBar"
+            android:layout_width="34dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="6dp"
+            android:background="#44252A"
+            android:minWidth="0dp"
+            android:padding="0dp"
+            android:text="✕"
+            android:textColor="#FF8A80"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fileProgressBox"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="14dp"
+        android:layout_marginBottom="14dp"
+        android:background="#EB191D26"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvFileProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:text="正在传输..."
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <ProgressBar
+            android:id="@+id/pbFileProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="6dp"
+            android:max="100"
+            android:progress="0" />
+    </LinearLayout>
+
+</FrameLayout>

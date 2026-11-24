@@ -5,7 +5,7 @@
 1. 把代码推送到仓库任意分支，工作流 `Build LAN Touchpad APK` 会自动运行（JDK 17 + Android SDK 35 + Gradle 8.9）。
 2. 构建完成后，进入该次 workflow run 页面，在 **Artifacts** 下载 `LAN-Touchpad-v<版本>-<commit>`，解压得到带版本号与 commit 短哈希的 APK。
 3. 如果推送的是 `main` 分支，还可以直接到 **Releases → `latest`（预发布）** 下载 `LAN-Touchpad-debug-latest.apk`，每次构建都会覆盖更新。
-4. 需要正式版本时打标签：`git tag v1.1.0 && git push origin v1.1.0`，CI 会自动创建同名 Release 并附上 APK。
+4. 需要正式版本时打标签：`git tag v2.0.0 && git push origin v2.0.0`，CI 会自动创建同名 Release 并附上 APK。
 
 > 产物文件名包含版本号和提交哈希，因此不同版本不会再是「同一份」。
 
@@ -31,10 +31,10 @@ android/app/build/outputs/apk/debug/app-debug.apk
 - 当前构建的是 debug 包（debug 签名），适合个人局域网测试。正式分发需配置 release 签名并改用 `assembleRelease`。
 - 平板需 Android 7.0（API 24）及以上，首次安装时允许「未知来源」。
 
-## 平板首次连接
+## 手机/平板首次连接
 
-1. 平板和 Windows 电脑连接同一个 Wi-Fi / LAN。
+1. Android 手机/平板和 Windows 电脑连接同一个 Wi-Fi / LAN。
 2. Windows 启动 `windows/server.py` 或打包出的 `server.exe`，查看控制台打印的 IPv4 地址。
-3. 平板打开 LAN Touchpad，输入电脑的 IPv4，点「连接」（端口 8765）。
+3. Android 设备打开 LAN Touchpad，输入电脑的 IPv4，点「连接」（端口 8765）。
 
 > GitHub Actions 只负责编译 APK。应用运行时只连接你填写的局域网 Windows 地址，不连接任何云服务。

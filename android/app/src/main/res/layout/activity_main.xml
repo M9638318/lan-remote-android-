@@ -6,220 +6,148 @@
     android:background="#0C111B">
 
     <LinearLayout
-        android:id="@+id/mainRow"
+        android:id="@+id/mainColumn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:padding="8dp">
+        android:orientation="vertical"
+        android:padding="6dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="LAN TOUCHPAD 2.0"
+                android:textColor="#ECF4FF"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tvConnection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="● 离线"
+                android:textColor="#F0B45A"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/etHost"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="Windows 电脑 IP，例如 192.168.1.10"
+                android:inputType="textUri"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#8795A8"
+                android:textSize="12sp" />
+            <Button
+                android:id="@+id/btnConnect"
+                android:layout_width="78dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:text="连接"
+                android:textAllCaps="false"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <FrameLayout
             android:id="@+id/screenFrame"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.65"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.05"
+            android:minHeight="120dp"
             android:background="#05080E">
-
             <com.example.lantouchpad.ScreenView
                 android:id="@+id/screenView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-
             <TextView
                 android:id="@+id/tvScreenStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|start"
-                android:layout_margin="10dp"
+                android:layout_margin="6dp"
                 android:background="#B31B2533"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="6dp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
                 android:text="未连接 · 等待画面"
                 android:textColor="#E8F0FA"
-                android:textSize="12sp" />
-
+                android:textSize="10sp" />
+            <Button
+                android:id="@+id/btnQuick"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="5dp"
+                android:backgroundTint="#1B9E8C"
+                android:elevation="6dp"
+                android:text="⌘"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
             <LinearLayout
                 android:id="@+id/quickPanel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="64dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="50dp"
                 android:background="#EE182333"
                 android:elevation="8dp"
                 android:orientation="vertical"
-                android:padding="6dp"
+                android:padding="4dp"
                 android:visibility="gone">
-
-                <Button
-                    android:id="@+id/quickAltTab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="42dp"
-                    android:text="Alt + Tab"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
-                <Button
-                    android:id="@+id/quickCtrlShiftEsc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="42dp"
-                    android:text="任务管理器"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
-                <Button
-                    android:id="@+id/quickWinD"
-                    android:layout_width="wrap_content"
-                    android:layout_height="42dp"
-                    android:text="显示桌面"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
-                <Button
-                    android:id="@+id/quickEsc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="42dp"
-                    android:text="Esc"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
-                <Button
-                    android:id="@+id/quickEnter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="42dp"
-                    android:text="Enter"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
+                <Button android:id="@+id/quickAltTab" android:layout_width="wrap_content" android:layout_height="38dp" android:text="Alt + Tab" android:textAllCaps="false" android:textSize="11sp" />
+                <Button android:id="@+id/quickCtrlShiftEsc" android:layout_width="wrap_content" android:layout_height="38dp" android:text="任务管理器" android:textAllCaps="false" android:textSize="11sp" />
+                <Button android:id="@+id/quickWinD" android:layout_width="wrap_content" android:layout_height="38dp" android:text="显示桌面" android:textAllCaps="false" android:textSize="11sp" />
+                <Button android:id="@+id/quickEsc" android:layout_width="wrap_content" android:layout_height="38dp" android:text="Esc" android:textAllCaps="false" android:textSize="11sp" />
+                <Button android:id="@+id/quickEnter" android:layout_width="wrap_content" android:layout_height="38dp" android:text="Enter" android:textAllCaps="false" android:textSize="11sp" />
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btnQuick"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="10dp"
-                android:backgroundTint="#1B9E8C"
-                android:elevation="8dp"
-                android:text="⌘"
-                android:textColor="#FFFFFF"
-                android:textSize="22sp" />
         </FrameLayout>
 
         <LinearLayout
-            android:id="@+id/sidePanel"
-            android:layout_width="350dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:background="#151E2C"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <Spinner android:id="@+id/spQuality" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1.1" android:spinnerMode="dropdown" />
+            <Spinner android:id="@+id/spFps" android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginStart="4dp" android:layout_weight="0.9" android:spinnerMode="dropdown" />
+            <Spinner android:id="@+id/spMonitor" android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginStart="4dp" android:layout_weight="0.8" android:spinnerMode="dropdown" />
+        </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="LAN TOUCHPAD"
-                    android:textColor="#ECF4FF"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-                <TextView
-                    android:id="@+id/tvConnection"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="● 离线"
-                    android:textColor="#F0B45A"
-                    android:textSize="12sp" />
-            </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+            <Button android:id="@+id/btnTouchMode" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="触控板" android:textAllCaps="false" android:textSize="11sp" />
+            <Button android:id="@+id/btnDirectMode" android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginStart="4dp" android:layout_weight="1" android:text="直接触控" android:textAllCaps="false" android:textSize="11sp" />
+            <Button android:id="@+id/btnGamepadMode" android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginStart="4dp" android:layout_weight="1" android:text="虚拟手柄" android:textAllCaps="false" android:textSize="11sp" />
+        </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <EditText
-                    android:id="@+id/etHost"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:hint="电脑 IP，例如 192.168.1.10"
-                    android:inputType="textUri"
-                    android:singleLine="true"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#8795A8"
-                    android:textSize="12sp" />
-                <Button
-                    android:id="@+id/btnConnect"
-                    android:layout_width="78dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="6dp"
-                    android:text="连接"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="画面控制中心"
-                android:textColor="#9FB1C7"
-                android:textSize="11sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <Spinner
-                    android:id="@+id/spQuality"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.15"
-                    android:spinnerMode="dropdown" />
-                <Spinner
-                    android:id="@+id/spFps"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="0.85"
-                    android:spinnerMode="dropdown" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:orientation="horizontal">
-                <Button
-                    android:id="@+id/btnTouchMode"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="触控板"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
-                <Button
-                    android:id="@+id/btnGamepadMode"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    android:text="虚拟手柄"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.78"
+            android:minHeight="110dp"
+            android:orientation="vertical">
             <FrameLayout
                 android:id="@+id/controlContainer"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="6dp"
                 android:layout_weight="1">
-
                 <com.example.lantouchpad.TouchpadView
                     android:id="@+id/touchpadView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-
                 <LinearLayout
                     android:id="@+id/gamepadPanel"
                     android:layout_width="match_parent"
@@ -234,88 +162,93 @@
                     <GridLayout
                         android:id="@+id/gamepadButtons"
                         android:layout_width="match_parent"
-                        android:layout_height="118dp"
-                        android:columnCount="4"
+                        android:layout_height="76dp"
+                        android:columnCount="8"
                         android:rowCount="2">
-                        <Button android:id="@+id/gpLB" android:layout_width="0dp" android:layout_height="52dp" android:layout_columnWeight="1" android:text="LB" android:textSize="11sp" />
-                        <Button android:id="@+id/gpLT" android:layout_width="0dp" android:layout_height="52dp" android:layout_columnWeight="1" android:text="LT" android:textSize="11sp" />
-                        <Button android:id="@+id/gpRB" android:layout_width="0dp" android:layout_height="52dp" android:layout_columnWeight="1" android:text="RB" android:textSize="11sp" />
-                        <Button android:id="@+id/gpRT" android:layout_width="0dp" android:layout_height="52dp" android:layout_columnWeight="1" android:text="RT" android:textSize="11sp" />
-                        <Button android:id="@+id/gpX" android:layout_width="0dp" android:layout_height="52dp" android:layout_columnWeight="1" android:text="X" android:textSize="11sp" />
-                        <Button android:id="@+id/gpY" android:layout_width="0dp" android:layout_height="52dp" android:layout_columnWeight="1" android:text="Y" android:textSize="11sp" />
-                        <Button android:id="@+id/gpA" android:layout_width="0dp" android:layout_height="52dp" android:layout_columnWeight="1" android:text="A" android:textSize="11sp" />
-                        <Button android:id="@+id/gpB" android:layout_width="0dp" android:layout_height="52dp" android:layout_columnWeight="1" android:text="B" android:textSize="11sp" />
+                        <Button android:id="@+id/gpLB" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="LB" android:textSize="9sp" />
+                        <Button android:id="@+id/gpLT" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="LT" android:textSize="9sp" />
+                        <Button android:id="@+id/gpBACK" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="BACK" android:textSize="8sp" />
+                        <Button android:id="@+id/gpSTART" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="START" android:textSize="8sp" />
+                        <Button android:id="@+id/gpRB" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="RB" android:textSize="9sp" />
+                        <Button android:id="@+id/gpRT" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="RT" android:textSize="9sp" />
+                        <Button android:id="@+id/gpL3" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="L3" android:textSize="9sp" />
+                        <Button android:id="@+id/gpX" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="X" android:textSize="9sp" />
+                        <Button android:id="@+id/gpY" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="Y" android:textSize="9sp" />
+                        <Button android:id="@+id/gpA" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="A" android:textSize="9sp" />
+                        <Button android:id="@+id/gpB" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="B" android:textSize="9sp" />
+                        <Button android:id="@+id/gpR3" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="R3" android:textSize="9sp" />
+                        <Button android:id="@+id/gpDpadLeft" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="←" android:textSize="12sp" />
+                        <Button android:id="@+id/gpDpadDown" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="↓" android:textSize="12sp" />
+                        <Button android:id="@+id/gpDpadUp" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="↑" android:textSize="12sp" />
+                        <Button android:id="@+id/gpDpadRight" android:layout_width="0dp" android:layout_height="36dp" android:layout_columnWeight="1" android:text="→" android:textSize="12sp" />
                     </GridLayout>
                 </LinearLayout>
             </FrameLayout>
-
-            <LinearLayout
+            <SeekBar
+                android:id="@+id/seekSensitivity"
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <Button
-                    android:id="@+id/btnSendFile"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="发文件到电脑"
-                    android:textAllCaps="false"
-                    android:textSize="11sp" />
-                <Button
-                    android:id="@+id/btnPcFileHint"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    android:text="电脑发文件"
-                    android:textAllCaps="false"
-                    android:textSize="11sp" />
-            </LinearLayout>
-
-            <ProgressBar
-                android:id="@+id/fileProgress"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
+                android:layout_height="24dp"
                 android:max="100"
-                android:progress="0"
-                android:visibility="gone" />
-            <TextView
-                android:id="@+id/tvFileStatus"
-                android:layout_width="match_parent"
-                android:layout_height="18dp"
-                android:gravity="center_vertical"
-                android:text="文件传输空闲"
-                android:textColor="#8F9EB2"
-                android:textSize="10sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <EditText
-                    android:id="@+id/etText"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:hint="输入文字后发送到电脑"
-                    android:imeOptions="actionSend"
-                    android:inputType="textCapSentences|textMultiLine"
-                    android:maxLines="2"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#8795A8"
-                    android:textSize="12sp" />
-                <Button
-                    android:id="@+id/btnSendText"
-                    android:layout_width="62dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="6dp"
-                    android:text="发送"
-                    android:textAllCaps="false"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                android:progress="38" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+            <Button android:id="@+id/btnSendFile" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="发文件到电脑" android:textAllCaps="false" android:textSize="10sp" />
+            <Button android:id="@+id/btnPcFileHint" android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginStart="4dp" android:layout_weight="1" android:text="电脑发文件" android:textAllCaps="false" android:textSize="10sp" />
+            <Button android:id="@+id/btnKeyboard" android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginStart="4dp" android:layout_weight="0.72" android:text="键盘" android:textAllCaps="false" android:textSize="10sp" />
+            <Button android:id="@+id/btnScreenshot" android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginStart="4dp" android:layout_weight="0.72" android:text="截图" android:textAllCaps="false" android:textSize="10sp" />
+            <Button android:id="@+id/btnScale" android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginStart="4dp" android:layout_weight="0.72" android:text="缩放" android:textAllCaps="false" android:textSize="10sp" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="30dp" android:gravity="center_vertical" android:orientation="horizontal">
+            <Button android:id="@+id/btnPauseFile" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="暂停传输" android:textAllCaps="false" android:textSize="10sp" />
+            <Button android:id="@+id/btnRetryFile" android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginStart="4dp" android:layout_weight="1" android:text="重试传输" android:textAllCaps="false" android:textSize="10sp" />
+            <Button android:id="@+id/btnCancelFile" android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginStart="4dp" android:layout_weight="1" android:text="取消传输" android:textAllCaps="false" android:textSize="10sp" />
+        </LinearLayout>
+        <ProgressBar android:id="@+id/fileProgress" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="4dp" android:max="100" android:progress="0" android:visibility="gone" />
+        <TextView android:id="@+id/tvFileStatus" android:layout_width="match_parent" android:layout_height="16dp" android:gravity="center_vertical" android:text="文件传输空闲" android:textColor="#8F9EB2" android:textSize="9sp" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="40dp" android:gravity="center_vertical" android:orientation="horizontal">
+            <EditText android:id="@+id/etText" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:hint="输入文字发送到电脑" android:imeOptions="actionSend" android:inputType="textCapSentences|textMultiLine" android:maxLines="2" android:textColor="#FFFFFF" android:textColorHint="#8795A8" android:textSize="11sp" />
+            <Button android:id="@+id/btnSendText" android:layout_width="58dp" android:layout_height="match_parent" android:layout_marginStart="4dp" android:text="发送" android:textAllCaps="false" android:textSize="11sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/keyboardPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#F0182333"
+        android:elevation="16dp"
+        android:orientation="vertical"
+        android:padding="6dp"
+        android:visibility="gone">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="34dp" android:gravity="center_vertical" android:orientation="horizontal">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="完整键盘 · 同时按住 Ctrl/Alt/Shift 组合快捷键" android:textColor="#FFFFFF" android:textSize="11sp" />
+            <Button android:id="@+id/btnKeyboardClose" android:layout_width="64dp" android:layout_height="32dp" android:text="关闭" android:textAllCaps="false" android:textSize="10sp" />
+        </LinearLayout>
+        <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:fillViewport="true" android:scrollbars="none">
+            <LinearLayout android:id="@+id/keyboardContainer" android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" />
+        </HorizontalScrollView>
+    </LinearLayout>
+
+    <Button android:id="@+id/btnLeftMenu" android:layout_width="38dp" android:layout_height="48dp" android:layout_gravity="center_vertical|start" android:backgroundTint="#CC24354A" android:elevation="12dp" android:text="☰" android:textColor="#FFFFFF" />
+    <LinearLayout android:id="@+id/leftMenuPanel" android:layout_width="112dp" android:layout_height="wrap_content" android:layout_gravity="center_vertical|start" android:background="#EE182333" android:elevation="13dp" android:orientation="vertical" android:padding="4dp" android:visibility="gone">
+        <Button android:id="@+id/menuTouch" android:layout_width="match_parent" android:layout_height="38dp" android:text="触控板" android:textAllCaps="false" android:textSize="10sp" />
+        <Button android:id="@+id/menuDirect" android:layout_width="match_parent" android:layout_height="38dp" android:text="直接触控" android:textAllCaps="false" android:textSize="10sp" />
+        <Button android:id="@+id/menuGamepad" android:layout_width="match_parent" android:layout_height="38dp" android:text="游戏手柄" android:textAllCaps="false" android:textSize="10sp" />
+        <Button android:id="@+id/menuKeyboard" android:layout_width="match_parent" android:layout_height="38dp" android:text="键盘" android:textAllCaps="false" android:textSize="10sp" />
+    </LinearLayout>
+    <Button android:id="@+id/btnRightMenu" android:layout_width="38dp" android:layout_height="48dp" android:layout_gravity="center_vertical|end" android:backgroundTint="#CC24354A" android:elevation="12dp" android:text="⋯" android:textColor="#FFFFFF" />
+    <LinearLayout android:id="@+id/rightMenuPanel" android:layout_width="112dp" android:layout_height="wrap_content" android:layout_gravity="center_vertical|end" android:background="#EE182333" android:elevation="13dp" android:orientation="vertical" android:padding="4dp" android:visibility="gone">
+        <Button android:id="@+id/menuQuick" android:layout_width="match_parent" android:layout_height="38dp" android:text="快捷操作" android:textAllCaps="false" android:textSize="10sp" />
+        <Button android:id="@+id/menuScreenshot" android:layout_width="match_parent" android:layout_height="38dp" android:text="屏幕截图" android:textAllCaps="false" android:textSize="10sp" />
+        <Button android:id="@+id/menuScale" android:layout_width="match_parent" android:layout_height="38dp" android:text="切换缩放" android:textAllCaps="false" android:textSize="10sp" />
+        <Button android:id="@+id/menuUpload" android:layout_width="match_parent" android:layout_height="38dp" android:text="发送文件" android:textAllCaps="false" android:textSize="10sp" />
+        <Button android:id="@+id/menuDownload" android:layout_width="match_parent" android:layout_height="38dp" android:text="接收文件" android:textAllCaps="false" android:textSize="10sp" />
+        <Button android:id="@+id/menuGetPcClipboard" android:layout_width="match_parent" android:layout_height="38dp" android:text="获取电脑剪贴板" android:textAllCaps="false" android:textSize="10sp" />
+        <Button android:id="@+id/menuSendPhoneClipboard" android:layout_width="match_parent" android:layout_height="38dp" android:text="发送手机剪贴板" android:textAllCaps="false" android:textSize="10sp" />
     </LinearLayout>
 </FrameLayout>

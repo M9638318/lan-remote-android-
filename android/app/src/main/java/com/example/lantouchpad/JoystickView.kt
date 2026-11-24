@@ -10,7 +10,7 @@ import android.view.View
 import kotlin.math.abs
 import kotlin.math.hypot
 
-/** Dual virtual analog sticks. Two fingers can operate left and right sticks simultaneously. */
+/** Dual analog sticks with pointer ownership and independent update throttling. */
 class JoystickView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
@@ -19,11 +19,12 @@ class JoystickView @JvmOverloads constructor(
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val density = resources.displayMetrics.density
     private val pointerSticks = HashMap<Int, Int>()
-    private var leftX = 0f
-    private var leftY = 0f
-    private var rightX = 0f
-    private var rightY = 0f
-    private var lastSend = 0L
+    private var leftPointer: Int? = null
+    private var rightPointer: Int? = null
+    private var leftX = 0f; private var leftY = 0f
+    private var rightX = 0f; private var rightY = 0f
+    private var lastLeftSend = 0L
+    private var lastRightSend = 0L
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -34,57 +35,57 @@ class JoystickView @JvmOverloads constructor(
     }
 
     private fun drawStick(canvas: Canvas, cx: Float, cy: Float, radius: Float, x: Float, y: Float, label: String) {
-        paint.style = Paint.Style.FILL
-        paint.color = 0xFF202D3E.toInt()
+        paint.style = Paint.Style.FILL; paint.color = 0xFF202D3E.toInt()
         canvas.drawCircle(cx, cy, radius, paint)
-        paint.style = Paint.Style.STROKE
-        paint.strokeWidth = 2f * density
-        paint.color = 0xFF5A718F.toInt()
+        paint.style = Paint.Style.STROKE; paint.strokeWidth = 2f * density; paint.color = 0xFF5A718F.toInt()
         canvas.drawCircle(cx, cy, radius, paint)
-        paint.color = 0xFF607D9E.toInt()
-        paint.style = Paint.Style.FILL
+        paint.color = 0xFF607D9E.toInt(); paint.style = Paint.Style.FILL
         canvas.drawCircle(cx + x * radius * 0.62f, cy + y * radius * 0.62f, radius * 0.34f, paint)
-        paint.color = 0xFFCAD6E4.toInt()
-        paint.textSize = 11f * density
-        paint.textAlign = Paint.Align.CENTER
+        paint.color = 0xFFCAD6E4.toInt(); paint.textSize = 11f * density; paint.textAlign = Paint.Align.CENTER
         canvas.drawText("${label} STICK", cx, cy + radius + 18f * density, paint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
-                val index = event.actionIndex
-                val pointerId = event.getPointerId(index)
-                val stick = if (event.getX(index) < width / 2f) 0 else 1
-                pointerSticks[pointerId] = stick
-                updateStick(event.getX(index), event.getY(index), stick, true)
+                val i = event.actionIndex
+                val id = event.getPointerId(i)
+                val stick = if (event.getX(i) < width / 2f) 0 else 1
+                if ((stick == 0 && leftPointer != null) || (stick == 1 && rightPointer != null)) return true
+                pointerSticks[id] = stick
+                if (stick == 0) leftPointer = id else rightPointer = id
+                updateStick(event.getX(i), event.getY(i), stick, true)
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
-                for (index in 0 until event.pointerCount) {
-                    val stick = pointerSticks[event.getPointerId(index)] ?: continue
-                    updateStick(event.getX(index), event.getY(index), stick, false)
+                for (i in 0 until event.pointerCount) {
+                    val id = event.getPointerId(i)
+                    val stick = pointerSticks[id] ?: continue
+                    updateStick(event.getX(i), event.getY(i), stick, false)
                 }
                 return true
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_CANCEL -> {
-                val index = event.actionIndex.coerceIn(0, event.pointerCount - 1)
-                val pointerId = event.getPointerId(index)
-                val stick = pointerSticks.remove(pointerId)
-                if (stick != null) {
-                    if (stick == 0) { leftX = 0f; leftY = 0f } else { rightX = 0f; rightY = 0f }
-                    emitAxis(stick)
-                }
-                if (event.actionMasked == MotionEvent.ACTION_CANCEL) {
-                    pointerSticks.clear()
-                    leftX = 0f; leftY = 0f; rightX = 0f; rightY = 0f
-                    emitAxis(0); emitAxis(1)
-                }
+            MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_UP -> {
+                val i = event.actionIndex.coerceIn(0, event.pointerCount - 1)
+                releasePointer(event.getPointerId(i))
                 invalidate()
+                return true
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                resetAll()
                 return true
             }
         }
         return true
+    }
+
+    private fun releasePointer(pointerId: Int) {
+        val stick = pointerSticks.remove(pointerId) ?: return
+        if (stick == 0) {
+            leftPointer = null; leftX = 0f; leftY = 0f; emitAxis(0, true)
+        } else {
+            rightPointer = null; rightX = 0f; rightY = 0f; emitAxis(1, true)
+        }
     }
 
     private fun updateStick(x: Float, y: Float, stick: Int, force: Boolean) {
@@ -98,16 +99,24 @@ class JoystickView @JvmOverloads constructor(
         if (abs(nx) < 0.08f) nx = 0f
         if (abs(ny) < 0.08f) ny = 0f
         if (stick == 0) { leftX = nx; leftY = ny } else { rightX = nx; rightY = ny }
-        val now = SystemClock.uptimeMillis()
-        if (force || now - lastSend >= 33L) {
-            lastSend = now
-            emitAxis(stick)
-        }
+        emitAxis(stick, force)
         invalidate()
     }
 
-    private fun emitAxis(stick: Int) {
-        if (stick == 0) onAxisChange?.invoke("L", leftX, -leftY)
-        else onAxisChange?.invoke("R", rightX, -rightY)
+    private fun emitAxis(stick: Int, force: Boolean) {
+        val now = SystemClock.uptimeMillis()
+        if (stick == 0) {
+            if (force || now - lastLeftSend >= 24L) {
+                lastLeftSend = now; onAxisChange?.invoke("L", leftX, -leftY)
+            }
+        } else if (force || now - lastRightSend >= 24L) {
+            lastRightSend = now; onAxisChange?.invoke("R", rightX, -rightY)
+        }
+    }
+
+    fun resetAll() {
+        pointerSticks.clear(); leftPointer = null; rightPointer = null
+        leftX = 0f; leftY = 0f; rightX = 0f; rightY = 0f
+        emitAxis(0, true); emitAxis(1, true); invalidate()
     }
 }

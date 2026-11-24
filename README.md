@@ -1,75 +1,91 @@
-# LAN Touchpad
+# LAN Touchpad 2.0
 
-> **构建说明（重要）**
+> **工程与构建说明**
 >
-> - 可编译的 Android 工程在 **`android/`**（包名 `com.example.lantouchpad`，Gradle 8.9 / AGP 8.7.2 / Kotlin 2.1.10 / compileSdk 35），Windows 服务端在 **`windows/`**。
-> - 仓库根目录的 `app/`、`build.gradle`、`settings.gradle`、`gradle.properties` 是早期精简版（`com.lanremote.app`）遗留，**已弃用，不参与 CI 构建**，仅为保留 v1 历史。
-> - 每次 `push` 到任意分支，GitHub Actions 都会构建 APK：产物在对应 run 的 **Artifacts**（`LAN-Touchpad-v<版本>-<commit>`），推送到 `main` 时还会更新 **`latest` 预发布**（`LAN-Touchpad-debug-latest.apk`）。
-> - 需要正式版本时打一个 `v*` 标签（例如 `v1.1.0`），CI 会自动创建对应 Release 并附上 APK。**不要再手动往 Release 上传旧 APK**。
-> - 修改 Android 功能必须改 `android/app/src/main/` 下的 `.kt` / XML，并递增 `android/app/build.gradle` 里的 `versionCode` / `versionName`；`SOURCE_CODE.md` 只是源码归档快照，Gradle 不会读取它。
-> - 当前版本：`versionCode 2` / `versionName 1.1.0`（debug 包，使用 debug 签名）。
+> - 当前 Android 构建工程在 **`android/`**（包名 `com.example.lantouchpad`；AGP 8.7.2 / Kotlin 2.1.10 / compileSdk 35 / Java 17）。Windows 服务端在 **`windows/`**。
+> - 根目录 `app/`、`build.gradle`、`settings.gradle`、`gradle.properties` 是早期精简版遗留代码，**不参与当前 CI 构建**；不要把它们当作 Android 当前工程修改入口。
+> - 每次推送到任意分支，GitHub Actions 会先运行 Windows 服务端自动化测试，再构建 Android debug APK。APK 位于该 Actions run 的 **Artifacts**。
+> - 当前 Android 版本：`versionCode 3` / `versionName 2.0.0`。正式发布可创建 `v2.0.0` 标签；CI 会构建并发布标签对应 APK。
 
+一个纯局域网 Android → Windows 远程桌面/触控板/虚拟手柄工具。无云服务、无账号、无数据库，不使用 WebRTC。
 
-一个纯局域网的 Android → Windows 远程触控板/虚拟手柄工具。无云服务、无账号、无数据库。
+## 2.0 已实现功能
 
-## 目录
+### 远程显示
+- Windows 多显示器枚举和选择，实时 JPEG 画面推流。
+- 省流、标清、高清和自适应画质；15/30/60 FPS 设置。
+- FIT / FILL / STRETCH 画面缩放显示，定期显示输出尺寸、发送帧速率与队列状态。
+- Android 端异步解码并合并过期帧，限制 JPEG 体积和解码尺寸，减少 UI 卡顿及内存压力。
+- 远程画面截图，可保存至 Android 系统文件选择器。
 
-```text
-lan-touchpad/
-├─ requirements.txt              # Windows 端 Python 依赖（windows/requirements.txt 同步副本）
-├─ windows/
-│  ├─ server.py
-│  ├─ requirements.txt
-│  └─ build_exe.bat
-├─ android/
-│  ├─ settings.gradle
-│  ├─ build.gradle
-│  ├─ gradle.properties
-│  └─ app/src/main/...
-├─ .github/workflows/build.yml
-└─ protocol.md
-```
+### 输入控制
+- 相对触控板：单指相对鼠标、点击、长按拖动、双指滚动、右键/中键手势。
+- 直接触控：将 Android 屏幕内的触点映射为所选 Windows 显示器的归一化坐标；支持单指点击/拖动和双指滚动。
+- 可调触控灵敏度；模式切换会复位按住状态。
+- 屏幕虚拟键盘，覆盖字母、数字、常见标点、F1–F12、修饰键和导航键；支持快捷键与中文文本粘贴。
+- 双向手动剪贴板：手机剪贴板文本发送至 Windows，或主动读取 Windows 纯文本剪贴板至手机。
+- 双摇杆、A/B/X/Y、肩键、扳机、BACK/START、L3/R3 和方向键虚拟 Xbox 360 手柄。
+- 左右浮动菜单和子菜单；手机竖屏与平板/手机横屏使用不同布局。
 
-## 当前功能
+### 文件与连接
+- Android → Windows、Windows → Android 双向文件传输，64 KiB 分块、进度、长度和 SHA-256 校验。
+- 当前连接内暂停、继续、取消；失败后可重新发起传输。
+- Windows 可通过 Android 请求打开系统文件选择对话框，也支持服务端命令行 `send <path>`。
+- 网络中断后指数退避自动重连；用户主动断开则停止重连。
+- 协议 v2 握手、能力协商、控制消息优先队列，以及断线/切换模式时的输入状态释放。
 
-- WebSocket TCP 8765，文本 JSON 控制指令 + 二进制数据帧。
-- Windows 截屏 JPEG 推流；默认 `saver / 15 FPS`，支持 `standard / hd` 和 15/30/60 FPS。
-- 单指相对鼠标移动、轻点左键、双指滚轮、长按拖拽。
-- 发送键盘按键/快捷键/中文文本。
-- 双摇杆、A/B/X/Y、LB/RB、LT/RT 虚拟 Xbox 360 手柄。
-- 平板 → 电脑、电脑 → 平板双向文件传输；64 KiB 分块和进度反馈。平板可直接请求 Windows 文件选择框。
-- 快捷键功能夹，收纳 Alt+Tab、任务管理器、显示桌面、Esc、Enter。
+## Windows 服务端安装
 
-## Windows 服务端
-
-1. Windows 10/11 安装 64 位 Python（建议 3.10–3.14），并确保 `py` 启动器可用。
-2. 进入 `windows` 目录，双击 `build_exe.bat`。或手动执行：
+1. Windows 10/11 安装 64 位 Python 3.10 或更新版本。
+2. 在仓库 `windows` 目录执行：
    ```powershell
    py -3 -m pip install -r requirements.txt
    py -3 server.py
    ```
-3. 首次运行时，Windows 防火墙只对**专用网络**允许 Python / `server.exe` 接收连接。
-4. 窗口会显示本机 LAN IPv4。平板与电脑必须连接同一局域网，且客户端填写 `ws://电脑IPv4:8765`（App 只要求 IP，会自动拼接端口）。
-5. 电脑接收平板上传的文件放在 `windows/received/`（打包运行时是 `server.exe` 当前工作目录下的 `received/`）。平板端点“电脑发文件”会在 Windows 弹出文件选择框；也可在服务端窗口执行 `send "文件完整路径"`。
+3. 首次运行时，仅允许 Windows 防火墙对**专用网络**放行 Python / `server.exe` 接收连接。
+4. 服务端窗口会显示本机 LAN IPv4。Android 与电脑必须连接同一可信局域网，连接地址为 `ws://电脑IPv4:8765`；也可直接在 App 输入 IP，端口会自动补齐。
+5. Android 上传到 Windows 的文件保存在服务端当前工作目录 `received/`。
+
+也可在 Windows `windows` 目录运行 `build_exe.bat` 打包为 EXE。打包后的 exe 仍需按目标电脑情况安装虚拟手柄驱动。
 
 ### 虚拟手柄驱动
 
-`vgamepad` 使用 ViGEmBus 驱动。构建机上通过 `pip install vgamepad` 安装 Python 包时，安装器可能弹出驱动安装流程；**如果你把 `server.exe` 拷贝到另一台电脑，目标电脑也必须先安装兼容的 ViGEmBus 驱动**，否则鼠标、键盘、画面和文件仍可使用，但虚拟手柄不可用。安装驱动后重新启动服务端。参见 vgamepad 项目说明：<https://github.com/yannbouteiller/vgamepad>。
+`vgamepad` 依赖兼容的 ViGEmBus 驱动。目标电脑未安装驱动或驱动不可用时，画面、鼠标、键盘和文件传输仍可使用，但 Xbox 虚拟手柄不可用。请参考 [vgamepad 项目说明](https://github.com/yannbouteiller/vgamepad)。
 
 ## Android APK
 
-- `minSdk 24`，横屏，传统 XML 布局 + 自定义 View；不使用 Compose / WebRTC。
-- 网络使用 OkHttp WebSocket；允许 `ws://` 明文连接，故只能在可信 LAN 中使用。
-- 详见下文的 APK 生成方式，或在 GitHub Actions 页面下载自动编译的 APK。
+- `minSdk 24`，传统 XML 布局与自定义 View；同时支持横屏和竖屏。
+- 使用 OkHttp WebSocket；当前服务端为 `ws://` 明文传输，只适合可信局域网。
+- 推送到 GitHub `v2-development` 后，打开仓库 **Actions**，选择最新成功的 Build workflow，下载 **Artifacts** 中的 APK。
 
-## 重要安全提示
+## 当前明确限制
 
-无账号、无鉴权和无 TLS 是本项目的明确设计约束，不代表适合不可信网络。服务端绑定 `0.0.0.0:8765`，同一网络内能访问该端口的主机可能控制电脑。不要在路由器做端口转发；防火墙只放行专用网络；不要在公共 Wi-Fi 使用。
+- **不是真正的 Windows 多点触控注入。** 直接触控模式是单指坐标映射，双指动作转换为滚轮；要把 Android 多指触摸原样注入 Windows 触摸屏，需要后续独立 Windows 虚拟触摸驱动或专用输入 API。
+- 多显示器选择已实现，但 Windows 混合 DPI、负坐标显示器、独占全屏和部分游戏的鼠标坐标行为仍需目标硬件实测。
+- 文件暂停/继续只在当前连接有效；重试从头开始，暂未实现断线续传、分块重传和进程重启恢复。
+- 手柄基础布局和按键已实现；自定义布局编辑器、透明度/位置保存、多个游戏配置档、宏录制/导入导出尚未完成。
+- 双向手动剪贴板已实现：手机剪贴板文本可发送到 Windows；右侧菜单可主动读取 Windows 纯文本剪贴板到手机。后台自动同步仍未开启，以避免未经用户触发地读取剪贴板。
+- 当前版本未实现 Windows 音频回传、远程视频录制和应用级登录/鉴权。
+- 当前服务端只允许一个控制端，且没有账号、配对码和 TLS。
 
-## 当前实现边界
+## 安全提示
 
-- v1 只允许一个 Android 控制端同时连接。
-- 屏幕流捕获 Windows 主显示器；锁屏/UAC 安全桌面/受保护视频可能无法正常捕获或操作。
-- 文件传输有块序号与长度校验，但没有断点续传和丢包重传。
-- JPEG 档位限制的是最大输出尺寸，较低分辨率的显示器不会被放大到档位尺寸。
-- Windows 屏幕尺寸、缩放比例和部分游戏独占全屏模式可能影响鼠标相对移动精度。
+服务端绑定 `0.0.0.0:8765`。同一网络中能访问这个端口的设备可能控制电脑并传送文件。不要做路由器端口转发，不要对 Windows 公用网络开放端口，不要在公共 Wi-Fi、公司不可信网络或互联网公开服务端。
+
+## 目录结构
+
+```text
+lan-touchpad/
+├─ android/                 # 当前 Android 工程
+├─ windows/                 # Windows Python 服务端
+├─ tests/                   # 跨平台服务端协议/状态测试
+├─ .github/workflows/       # GitHub Actions APK 构建与测试
+└─ protocol.md              # 协议 v2
+```
+
+## 文档
+
+- [2.0.0 变更记录](CHANGELOG_V2.md)
+- [更新到 v2-development 的文件清单与步骤](UPGRADE_TO_V2.md)
+- [协议 v2](protocol.md)
+- [验证记录与实机验收清单](VALIDATION.md)

@@ -47,7 +47,7 @@ class TouchpadView @JvmOverloads constructor(
         onMouseEvent?.invoke(json)
     }
 
-    private fun cancelLongPress() {
+    private fun cancelPressTimer() {
         pressRunnable?.let(handler::removeCallbacks)
         pressRunnable = null
     }
@@ -86,7 +86,7 @@ class TouchpadView @JvmOverloads constructor(
                 moved = false
                 dragging = false
                 twoFinger = false
-                cancelLongPress()
+                cancelPressTimer()
                 pressRunnable = Runnable {
                     if (!twoFinger && !moved && isPressed) {
                         dragging = true
@@ -98,14 +98,14 @@ class TouchpadView @JvmOverloads constructor(
                 return true
             }
             MotionEvent.ACTION_POINTER_DOWN -> {
-                cancelLongPress()
+                cancelPressTimer()
                 twoFinger = true
                 if (event.pointerCount >= 2) lastCentroidY = (event.getY(0) + event.getY(1)) / 2f
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
                 if (event.pointerCount >= 2 || twoFinger) {
-                    cancelLongPress()
+                    cancelPressTimer()
                     twoFinger = true
                     val centroid = (event.getY(0) + event.getY(1)) / 2f
                     val dy = lastCentroidY - centroid
@@ -125,7 +125,7 @@ class TouchpadView @JvmOverloads constructor(
                 val dyFromStart = event.y - downY
                 if (abs(dxFromStart) > slop || abs(dyFromStart) > slop) {
                     moved = true
-                    if (!dragging) cancelLongPress()
+                    if (!dragging) cancelPressTimer()
                 }
                 val dx = (event.x - lastX) * 1.65f
                 val dy = (event.y - lastY) * 1.65f
@@ -154,7 +154,7 @@ class TouchpadView @JvmOverloads constructor(
                 return true
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                cancelLongPress()
+                cancelPressTimer()
                 val elapsed = SystemClock.uptimeMillis() - downAt
                 if (dragging) {
                     if (abs(pendingDx) + abs(pendingDy) > 0.5f) {

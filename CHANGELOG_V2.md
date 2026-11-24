@@ -1,3 +1,17 @@
+# LAN Touchpad Android 2.2.0
+
+## Android-only update
+- Added a true remote-screen fullscreen toggle. Fullscreen hides the surrounding control columns while keeping a floating exit button on the remote display.
+- Added snipping-style region screenshots: drag a rectangle over the remote image and save the selected region as PNG through Android's document picker. The crop maps to the actual remote frame and respects FIT/FILL/STRETCH display geometry.
+- Updated the Android system theme to a modern dark Material theme with teal accent and refreshed icon-plus-label action text.
+- Kept the existing WebSocket protocol, remote input, file transfer, gamepad, and Windows server implementation unchanged.
+
+## Validation status
+- XML resource parsing and Python resource tests are run locally for this source package.
+- Android Gradle build and physical-device interaction still require GitHub Actions / device testing.
+
+---
+
 # LAN Touchpad 2.0.0 变更记录
 
 ## Android

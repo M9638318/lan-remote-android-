@@ -34,6 +34,7 @@ import java.util.concurrent.ThreadLocalRandom
 class MainActivity : Activity(), WebSocketManager.Listener {
     private lateinit var ws: WebSocketManager
     private lateinit var screenView: ScreenView
+    private lateinit var cropOverlay: CropOverlayView
     private lateinit var touchpadView: TouchpadView
     private lateinit var joystickView: JoystickView
     private lateinit var tvConnection: TextView
@@ -68,6 +69,7 @@ class MainActivity : Activity(), WebSocketManager.Listener {
     private var monitorIndices = mutableListOf(1)
     private var seenFirstFrame = false
     private var currentScaleMode = ScreenView.ScaleMode.FIT
+    private var isRemoteFullscreen = false
     private var inputMode = InputMode.RELATIVE
     private var directTouchDown = false
     private var directScrollMode = false
@@ -94,6 +96,8 @@ class MainActivity : Activity(), WebSocketManager.Listener {
     private fun bindLayout(hostValue: String = "") {
         setContentView(R.layout.activity_main)
         screenView = findViewById(R.id.screenView)
+        cropOverlay = findViewById(R.id.cropOverlay)
+        cropOverlay.onSelectionFinished = { selection -> finishRegionScreenshot(selection) }
         screenView.setScaleMode(currentScaleMode)
         touchpadView = findViewById(R.id.touchpadView)
         joystickView = findViewById(R.id.joystickView)
@@ -120,6 +124,7 @@ class MainActivity : Activity(), WebSocketManager.Listener {
         // A finger or key may still be held when Android swaps the qualified layout.
         if (::ws.isInitialized && ws.isConnected()) sendStateReset()
         val host = if (::etHost.isInitialized) etHost.text.toString() else ""
+        isRemoteFullscreen = false
         bindLayout(host)
         if (ws.isConnected()) ws.sendScreenControl(qualityValue, fpsValue, monitorValue)
     }
@@ -248,10 +253,12 @@ class MainActivity : Activity(), WebSocketManager.Listener {
         findViewById<Button>(R.id.btnKeyboard).setOnClickListener { showKeyboard(true) }
         findViewById<Button>(R.id.btnKeyboardClose).setOnClickListener { showKeyboard(false) }
         findViewById<Button>(R.id.menuKeyboard).setOnClickListener { showKeyboard(true); hideMenus() }
-        findViewById<Button>(R.id.btnScreenshot).setOnClickListener { createScreenshot() }
+        findViewById<Button>(R.id.btnScreenshot).setOnClickListener { beginRegionScreenshot() }
         findViewById<Button>(R.id.btnScale).setOnClickListener { cycleScale() }
+        findViewById<Button>(R.id.btnFullscreen).setOnClickListener { toggleRemoteFullscreen() }
+        findViewById<Button>(R.id.btnFullscreenSnip).setOnClickListener { beginRegionScreenshot() }
         findViewById<Button>(R.id.menuQuick).setOnClickListener { toggleVisibility(R.id.quickPanel); hideMenus() }
-        findViewById<Button>(R.id.menuScreenshot).setOnClickListener { createScreenshot(); hideMenus() }
+        findViewById<Button>(R.id.menuScreenshot).setOnClickListener { beginRegionScreenshot(); hideMenus() }
         findViewById<Button>(R.id.menuScale).setOnClickListener { cycleScale(); hideMenus() }
         findViewById<Button>(R.id.menuUpload).setOnClickListener { chooseUploadFile(); hideMenus() }
         findViewById<Button>(R.id.menuDownload).setOnClickListener { requestPcFilePicker(); hideMenus() }
@@ -608,6 +615,48 @@ class MainActivity : Activity(), WebSocketManager.Listener {
             putExtra(Intent.EXTRA_TITLE, name)
         }
         startActivityForResult(intent, REQUEST_DOWNLOAD)
+    }
+
+    private fun toggleRemoteFullscreen() {
+        val screenFrame = findViewById<View>(R.id.screenFrame)
+        val parent = screenFrame.parent as? android.view.ViewGroup ?: return
+        isRemoteFullscreen = !isRemoteFullscreen
+        for (index in 0 until parent.childCount) {
+            val child = parent.getChildAt(index)
+            if (child !== screenFrame) child.visibility = if (isRemoteFullscreen) View.GONE else View.VISIBLE
+        }
+        findViewById<View>(R.id.tvScreenStatus).visibility = if (isRemoteFullscreen) View.GONE else View.VISIBLE
+        findViewById<View>(R.id.quickPanel).visibility = View.GONE
+        findViewById<Button>(R.id.btnQuick).visibility = if (isRemoteFullscreen) View.GONE else View.VISIBLE
+        findViewById<Button>(R.id.btnFullscreen).text = if (isRemoteFullscreen) "⤢" else "⛶"
+        findViewById<Button>(R.id.btnFullscreen).contentDescription = if (isRemoteFullscreen) "退出远程画面全屏" else "切换远程画面全屏"
+        findViewById<Button>(R.id.btnFullscreenSnip).visibility = if (isRemoteFullscreen) View.VISIBLE else View.GONE
+        hideMenus()
+        cropOverlay.visibility = View.GONE
+        cropOverlay.reset()
+    }
+
+    private fun beginRegionScreenshot() {
+        val probe = screenView.snapshotBitmap()
+        if (probe == null) { toast("目前还没有可截图的远程画面"); return }
+        probe.recycle()
+        cropOverlay.reset()
+        cropOverlay.visibility = View.VISIBLE
+        toast("请在远程画面上拖动，框选需要保存的区域")
+    }
+
+    private fun finishRegionScreenshot(selection: android.graphics.RectF) {
+        val cropped = screenView.cropSnapshot(selection)
+        cropOverlay.visibility = View.GONE
+        cropOverlay.reset()
+        if (cropped == null) { toast("选区没有覆盖有效画面"); return }
+        pendingScreenshot?.recycle()
+        pendingScreenshot = cropped
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE); type = "image/png"
+            putExtra(Intent.EXTRA_TITLE, "LAN-Touchpad-Clip-${System.currentTimeMillis()}.png")
+        }
+        startActivityForResult(intent, REQUEST_SCREENSHOT)
     }
 
     private fun createScreenshot() {

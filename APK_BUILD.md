@@ -5,7 +5,7 @@
 1. 把代码推送到仓库任意分支，工作流 `Build LAN Touchpad APK` 会自动运行（JDK 17 + Android SDK 35 + Gradle 8.9）。
 2. 构建完成后，进入该次 workflow run 页面，在 **Artifacts** 下载 `LAN-Touchpad-v<版本>-<commit>`，解压得到带版本号与 commit 短哈希的 APK。
 3. 如果推送的是 `main` 分支，还可以直接到 **Releases → `latest`（预发布）** 下载 `LAN-Touchpad-debug-latest.apk`，每次构建都会覆盖更新。
-4. 需要正式版本时打标签：`git tag v2.0.0 && git push origin v2.0.0`，CI 会自动创建同名 Release 并附上 APK。
+4. 需要正式版本时打标签：`git tag v2.2.0 && git push origin v2.2.0`，CI 会自动创建同名 Release 并附上 APK。
 
 > 产物文件名包含版本号和提交哈希，因此不同版本不会再是「同一份」。
 

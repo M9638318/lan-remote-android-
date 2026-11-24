@@ -5,7 +5,7 @@
 > - 当前 Android 构建工程在 **`android/`**（包名 `com.example.lantouchpad`；AGP 8.7.2 / Kotlin 2.1.10 / compileSdk 35 / Java 17）。Windows 服务端在 **`windows/`**。
 > - 根目录 `app/`、`build.gradle`、`settings.gradle`、`gradle.properties` 是早期精简版遗留代码，**不参与当前 CI 构建**；不要把它们当作 Android 当前工程修改入口。
 > - 每次推送到任意分支，GitHub Actions 会先运行 Windows 服务端自动化测试，再构建 Android debug APK。APK 位于该 Actions run 的 **Artifacts**。
-> - 当前 Android 版本：`versionCode 3` / `versionName 2.0.0`。正式发布可创建 `v2.0.0` 标签；CI 会构建并发布标签对应 APK。
+> - 当前 Android 版本：`versionCode 4` / `versionName 2.2.0`。本次升级仅涉及 Android 客户端；Windows 服务端与 Windows GUI/安装程序保持不变。
 
 一个纯局域网 Android → Windows 远程桌面/触控板/虚拟手柄工具。无云服务、无账号、无数据库，不使用 WebRTC。
 
@@ -102,7 +102,7 @@ lan-touchpad/
 
 ## 文档
 
-- [2.0.0 变更记录](CHANGELOG_V2.md)
+- [Android 2.2.0 变更记录](CHANGELOG_V2.md)
 - [更新到 v2-development 的文件清单与步骤](UPGRADE_TO_V2.md)
 - [协议 v2](protocol.md)
 - [验证记录与实机验收清单](VALIDATION.md)
@@ -111,3 +111,8 @@ lan-touchpad/
 ## Windows 桌面端安装（v2.1.0）
 
 Windows 端提供独立图形化控制中心和标准安装程序。GitHub Actions 的 Windows 构建任务会同时产出 `LAN-Touchpad.exe` 与 `LAN-Touchpad-Setup-v2.1.0.exe`。安装包默认安装到 `C:\Program Files\LAN Touchpad`，可选择桌面快捷方式，并提供登录 Windows 自动启动选项。接收文件保存在 `%LOCALAPPDATA%\LAN Touchpad\received`，升级或卸载不会自动删除。详见 `windows/README_GUI.md`。
+
+
+## Android 2.2.0 interface update
+
+This release focuses on Android only. It adds remote-screen fullscreen mode and drag-to-select (snipping-style) PNG screenshots. The Windows server and Windows GUI/installer sources are intentionally unchanged. Build the Android APK from the `android/` Gradle project.

@@ -137,6 +137,20 @@ class ScreenView @JvmOverloads constructor(
         return try { current.copy(Bitmap.Config.ARGB_8888, false) } catch (_: Exception) { null }
     }
 
+    /** Crop the displayed remote image using a selection expressed in this View's coordinates. */
+    fun cropSnapshot(viewSelection: RectF): Bitmap? {
+        val current = bitmap ?: return null
+        if (current.isRecycled || width <= 0 || height <= 0) return null
+        val visible = RectF()
+        if (!visible.setIntersect(imageRect(current), viewSelection)) return null
+        val image = imageRect(current)
+        val left = (((visible.left - image.left) / image.width()) * current.width).toInt().coerceIn(0, current.width - 1)
+        val top = (((visible.top - image.top) / image.height()) * current.height).toInt().coerceIn(0, current.height - 1)
+        val right = (((visible.right - image.left) / image.width()) * current.width).toInt().coerceIn(left + 1, current.width)
+        val bottom = (((visible.bottom - image.top) / image.height()) * current.height).toInt().coerceIn(top + 1, current.height)
+        return try { Bitmap.createBitmap(current, left, top, right - left, bottom - top) } catch (_: Exception) { null }
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val frame = bitmap ?: return

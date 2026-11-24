@@ -28,6 +28,17 @@ class AndroidResourceTests(unittest.TestCase):
                 self.assertEqual(len(ids), len(set(ids)), "layout contains duplicate resource IDs")
                 self.assertEqual(sorted(referenced - set(ids)), [], "Kotlin references missing from this layout")
 
+
+    def test_android_220_fullscreen_and_snipping_resources_exist(self):
+        for layout in LAYOUTS:
+            source = layout.read_text(encoding="utf-8")
+            self.assertIn("@+id/btnFullscreen", source)
+            self.assertIn("@+id/btnFullscreenSnip", source)
+            self.assertIn("@+id/cropOverlay", source)
+        crop = MAIN / "java" / "com" / "example" / "lantouchpad" / "CropOverlayView.kt"
+        self.assertTrue(crop.is_file())
+        self.assertIn("cropSnapshot", (MAIN / "java" / "com" / "example" / "lantouchpad" / "ScreenView.kt").read_text(encoding="utf-8"))
+
     def test_activity_is_not_forced_to_landscape(self):
         manifest = ET.parse(MAIN / "AndroidManifest.xml")
         activity = next(node for node in manifest.iter() if node.tag.endswith("activity"))

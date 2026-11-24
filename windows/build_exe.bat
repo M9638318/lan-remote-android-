@@ -1,43 +1,68 @@
 @echo off
-setlocal
+setlocal EnableExtensions
+chcp 65001 >nul
 cd /d "%~dp0"
+echo ============================================================
+echo       LAN Touchpad - Windows GUI EXE builder
+echo ============================================================
 
-echo [1/3] Checking Python...
-py -3 --version
-if errorlevel 1 (
-    echo ERROR: Python 3.10+ was not found. Install Python and enable the py launcher.
-    pause
-    exit /b 1
+set "PY_LAUNCHER="
+if /i "%CI%"=="true" set "PY_LAUNCHER=python"
+if not defined PY_LAUNCHER (
+  where py >nul 2>nul
+  if not errorlevel 1 set "PY_LAUNCHER=py -3"
 )
-py -3 -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else 1)"
-if errorlevel 1 (
-    echo ERROR: Python 3.10 or newer is required. Select a supported Python with the py launcher.
-    pause
-    exit /b 1
+if not defined PY_LAUNCHER (
+  where python >nul 2>nul
+  if not errorlevel 1 set "PY_LAUNCHER=python"
+)
+if not defined PY_LAUNCHER (
+  echo [ERROR] Python launcher or python command was not found.
+  pause
+  exit /b 1
 )
 
-echo [2/3] Installing dependencies...
-py -3 -m pip install --upgrade pip
-if errorlevel 1 goto :error
-py -3 -m pip install -r requirements.txt
-if errorlevel 1 goto :error
+for /f "usebackq delims=" %%P in (`%PY_LAUNCHER% "%~dp0select_python.py"`) do set "PY_EXE=%%P"
+if not defined PY_EXE (
+  echo [ERROR] No compatible 64-bit Python 3.10-3.14 was selected.
+  pause
+  exit /b 1
+)
+echo Selected Python: "%PY_EXE%"
+"%PY_EXE%" --version
 
-echo [3/3] Building single-file server.exe...
-py -3 -m PyInstaller --noconfirm --clean --onefile --name server --console ^
-  --collect-all vgamepad ^
-  --collect-all mss ^
-  --collect-all pyautogui ^
-  server.py
-if errorlevel 1 goto :error
+if not exist ".venv\Scripts\python.exe" (
+  "%PY_EXE%" -m venv ".venv"
+  if errorlevel 1 goto :failed
+)
+set "VENV_PY=%~dp0.venv\Scripts\python.exe"
+"%VENV_PY%" -m pip install --upgrade pip
+if errorlevel 1 goto :failed
+set "VGAMEPAD_SKIP_VIGEMBUS_INSTALL=true"
+"%VENV_PY%" -m pip install -r "%~dp0requirements-build.txt"
+if errorlevel 1 goto :failed
+
+if not exist "%~dp0build\spec" mkdir "%~dp0build\spec"
+if not exist "%~dp0build\work" mkdir "%~dp0build\work"
+"%VENV_PY%" -m PyInstaller --noconfirm --clean --onefile --windowed ^
+  --name "LAN-Touchpad" ^
+  --distpath "%~dp0dist" --workpath "%~dp0build\work" --specpath "%~dp0build\spec" ^
+  --collect-all mss --collect-all pyautogui --collect-all pyscreeze ^
+  --collect-all PIL --collect-all vgamepad ^
+  --hidden-import server --hidden-import tkinter.filedialog ^
+  "%~dp0gui.py"
+if errorlevel 1 goto :failed
+if not exist "%~dp0dist\LAN-Touchpad.exe" goto :failed
 
 echo.
-echo BUILD SUCCESS: %CD%\dist\server.exe
-echo Run server.exe, then allow it through Windows Defender Firewall on Private networks.
-pause
+echo BUILD SUCCESS: "%~dp0dist\LAN-Touchpad.exe"
+echo GUI application built. GitHub Actions additionally creates the installer.
+if not defined CI pause
 exit /b 0
 
-:error
+:failed
 echo.
-echo BUILD FAILED. Read the error above.
-pause
+echo [ERROR] Build failed. Review the output above.
+echo Build files are retained under windows\build for diagnosis.
+if not defined CI pause
 exit /b 1

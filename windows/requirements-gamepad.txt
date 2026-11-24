@@ -1,0 +1,3 @@
+# Optional Xbox virtual gamepad support.
+# The ViGEmBus driver is a separate Windows system driver.
+vgamepad==0.2.0

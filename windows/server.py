@@ -32,7 +32,23 @@ CHUNK_SIZE = 64 * 1024
 MAGIC_SCREEN = 0x01
 MAGIC_FILE = 0x02
 PROTOCOL_VERSION = 2
-RECEIVED_DIR = Path("received")
+
+
+def application_directory() -> Path:
+    """Return the folder beside the executable, or beside server.py in source mode."""
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return Path(__file__).resolve().parent
+
+
+APP_DIR = application_directory()
+if getattr(sys, "frozen", False) and os.environ.get("LOCALAPPDATA"):
+    # Installed builds keep mutable user data outside Program Files so upgrades
+    # and uninstalls do not silently erase received files.
+    USER_DATA_DIR = Path(os.environ["LOCALAPPDATA"]) / "LAN Touchpad"
+else:
+    USER_DATA_DIR = APP_DIR
+RECEIVED_DIR = USER_DATA_DIR / "received"
 MAX_FILE_SIZE = 20 * 1024 * 1024 * 1024  # 20 GiB safety ceiling per transfer.
 MAX_TEXT_LENGTH = 16_000
 MAX_SEND_QUEUE = 32
@@ -985,7 +1001,11 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("\n服务器已停止")
+    if "--worker" in sys.argv:
+        try:
+            asyncio.run(main())
+        except KeyboardInterrupt:
+            print("\n服务器已停止")
+    else:
+        from gui import LanTouchpadApp
+        LanTouchpadApp().run()

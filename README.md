@@ -34,23 +34,40 @@
 - 网络中断后指数退避自动重连；用户主动断开则停止重连。
 - 协议 v2 握手、能力协商、控制消息优先队列，以及断线/切换模式时的输入状态释放。
 
-## Windows 服务端安装
+## Windows 桌面端安装与使用（v2.1.0）
 
-1. Windows 10/11 安装 64 位 Python 3.10 或更新版本。
-2. 在仓库 `windows` 目录执行：
-   ```powershell
-   py -3 -m pip install -r requirements.txt
-   py -3 server.py
-   ```
-3. 首次运行时，仅允许 Windows 防火墙对**专用网络**放行 Python / `server.exe` 接收连接。
-4. 服务端窗口会显示本机 LAN IPv4。Android 与电脑必须连接同一可信局域网，连接地址为 `ws://电脑IPv4:8765`；也可直接在 App 输入 IP，端口会自动补齐。
-5. Android 上传到 Windows 的文件保存在服务端当前工作目录 `received/`。
+Windows 端提供独立桌面窗口和标准安装向导，不再要求用户操作命令行。
 
-也可在 Windows `windows` 目录运行 `build_exe.bat` 打包为 EXE。打包后的 exe 仍需按目标电脑情况安装虚拟手柄驱动。
+### 安装程序
+
+GitHub Actions 的 Windows 构建任务会同时生成：
+
+- `LAN-Touchpad.exe`：独立 GUI 应用程序。
+- `LAN-Touchpad-Setup-v2.1.0.exe`：标准 Windows 安装程序。
+
+安装向导默认目录为 `C:\Program Files\LAN Touchpad`，用户可以更改。默认创建开始菜单快捷方式、勾选桌面快捷方式、勾选登录 Windows 自动启动，并提供安装完成后立即启动选项。安装后也可在主窗口底部开关自动启动。
+
+接收文件保存在 `%LOCALAPPDATA%\LAN Touchpad\received`，不放在 Program Files。升级或卸载不会自动删除该目录。
+
+### 本机开发与打包
+
+1. Windows 10/11 x64，安装 64 位 Python 3.10–3.14。
+2. 双击 `windows/build_exe.bat`。脚本会扫描 Python Launcher 可见的兼容版本；发现多个版本时列出版本与路径供选择，并创建独立 `.venv`。
+3. 成功后生成 `windows/dist/LAN-Touchpad.exe`。本机 BAT 生成的是 GUI EXE；完整安装向导由 GitHub Actions 使用 Inno Setup 构建。
+
+### 使用
+
+启动 LAN Touchpad，在控制面板查看 `ws://电脑IPv4:8765` 地址。Android 手机/平板与电脑必须连接同一可信局域网。窗口提供服务启动/停止、地址复制、设备连接状态、运行日志、文件发送和接收目录入口。
 
 ### 虚拟手柄驱动
 
-`vgamepad` 依赖兼容的 ViGEmBus 驱动。目标电脑未安装驱动或驱动不可用时，画面、鼠标、键盘和文件传输仍可使用，但 Xbox 虚拟手柄不可用。请参考 [vgamepad 项目说明](https://github.com/yannbouteiller/vgamepad)。
+虚拟 Xbox 手柄需要目标电脑安装兼容的 ViGEmBus 驱动。未安装或驱动不可用时，画面、鼠标、键盘和文件传输仍可使用。参考 [vgamepad 项目说明](https://github.com/yannbouteiller/vgamepad)。
+
+### Windows 防火墙与安全
+
+服务端绑定 `0.0.0.0:8765`。本项目没有账号、配对码或 TLS。同一网络中能访问该端口的设备可能控制电脑并传送文件。只允许 Windows 防火墙的**专用网络**访问 TCP 8765，不要为公用网络开放，不要设置路由器端口转发，也不要在公共 Wi-Fi 使用。
+
+详见 [`windows/README_GUI.md`](windows/README_GUI.md) 和安装程序中的 `README_INSTALL.txt`。
 
 ## Android APK
 
@@ -77,7 +94,7 @@
 ```text
 lan-touchpad/
 ├─ android/                 # 当前 Android 工程
-├─ windows/                 # Windows Python 服务端
+├─ windows/                 # Windows GUI、服务端核心与安装程序
 ├─ tests/                   # 跨平台服务端协议/状态测试
 ├─ .github/workflows/       # GitHub Actions APK 构建与测试
 └─ protocol.md              # 协议 v2
@@ -89,3 +106,8 @@ lan-touchpad/
 - [更新到 v2-development 的文件清单与步骤](UPGRADE_TO_V2.md)
 - [协议 v2](protocol.md)
 - [验证记录与实机验收清单](VALIDATION.md)
+
+
+## Windows 桌面端安装（v2.1.0）
+
+Windows 端提供独立图形化控制中心和标准安装程序。GitHub Actions 的 Windows 构建任务会同时产出 `LAN-Touchpad.exe` 与 `LAN-Touchpad-Setup-v2.1.0.exe`。安装包默认安装到 `C:\Program Files\LAN Touchpad`，可选择桌面快捷方式，并提供登录 Windows 自动启动选项。接收文件保存在 `%LOCALAPPDATA%\LAN Touchpad\received`，升级或卸载不会自动删除。详见 `windows/README_GUI.md`。

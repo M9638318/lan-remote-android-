@@ -34,7 +34,16 @@ android/app/build/outputs/apk/debug/app-debug.apk
 ## 手机/平板首次连接
 
 1. Android 手机/平板和 Windows 电脑连接同一个 Wi-Fi / LAN。
-2. Windows 启动 `windows/server.py` 或打包出的 `server.exe`，查看控制台打印的 IPv4 地址。
+2. Windows 安装并启动 LAN Touchpad 桌面程序，在控制面板查看局域网 IPv4 地址。
 3. Android 设备打开 LAN Touchpad，输入电脑的 IPv4，点「连接」（端口 8765）。
 
-> GitHub Actions 只负责编译 APK。应用运行时只连接你填写的局域网 Windows 地址，不连接任何云服务。
+> Android APK 和 Windows 服务端 EXE 由两个独立的 GitHub Actions job 构建。应用运行时只连接你填写的局域网 Windows 地址，不连接任何云服务。
+
+## Windows GUI EXE 与安装程序
+
+GitHub Actions 的 Windows job 会构建 `LAN-Touchpad.exe` 和 Inno Setup 安装程序 `LAN-Touchpad-Setup-v2.1.0.exe`。在该次 Actions run 的 Artifacts 下载 `LAN-Touchpad-Windows-Installer-...`。
+
+本机只构建 GUI EXE：Windows 10/11 x64，安装 Python 3.10–3.14 x64 后双击 `windows/build_exe.bat`。脚本扫描可用 Python 版本，存在多个兼容版本时允许选择，输出 `windows/dist/LAN-Touchpad.exe`。完整安装向导由 GitHub Actions 构建。
+
+安装程序默认目录为 `C:\Program Files\LAN Touchpad`，提供桌面快捷方式、开始菜单快捷方式、登录自动启动和安装后启动选项。用户接收文件保存在 `%LOCALAPPDATA%\LAN Touchpad\received`，卸载时保留。
+

@@ -1,0 +1,3 @@
+-r requirements.txt
+-r requirements-gamepad.txt
+PyInstaller==6.22.3

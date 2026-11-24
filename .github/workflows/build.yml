@@ -1,4 +1,4 @@
-name: Build LAN Touchpad APK
+name: Build LAN Touchpad Android APK and Windows Installer
 
 on:
   push:
@@ -16,6 +16,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Python for server and resource tests
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install cross-platform test dependencies
+        run: python -m pip install --upgrade pip Pillow==12.2.0 websockets==16.1
+
+      - name: Run server and Android resource tests
+        run: |
+          python -m py_compile windows/server.py
+          python -m unittest discover -s tests -v
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -65,13 +78,13 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Update latest prerelease (main)
-        if: github.ref == 'refs/heads/main'
+      - name: Update latest prerelease
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/v2-development'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          gh release view latest >/dev/null 2>&1 || gh release create latest --prerelease --title "最新自动构建 (main)" --notes "由 main 分支自动构建，commit ${GITHUB_SHA}。"
+          gh release view latest >/dev/null 2>&1 || gh release create latest --prerelease --title "最新自动构建" --notes "由 ${GITHUB_REF_NAME} 分支自动构建，commit ${GITHUB_SHA}。"
           cp "${{ steps.apk.outputs.path }}" LAN-Touchpad-debug-latest.apk
           gh release upload latest LAN-Touchpad-debug-latest.apk --clobber
 
@@ -84,3 +97,42 @@ jobs:
           gh release create "${{ github.ref_name }}" "${{ steps.apk.outputs.path }}" \
             --title "LAN Touchpad ${{ github.ref_name }}" \
             --generate-notes
+
+  build-windows-server:
+    name: Build Windows GUI EXE and installer
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build Windows GUI application EXE
+        shell: cmd
+        run: windows\build_exe.bat
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --no-progress -y
+
+      - name: Build Windows installer
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (!(Test-Path $iscc)) { throw "Inno Setup compiler not found: $iscc" }
+          & $iscc /DMyAppVersion=2.1.0 windows\installer.iss
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Upload Windows application and installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: LAN-Touchpad-Windows-Installer-v2.1.0-${{ github.sha }}
+          path: |
+            windows/dist/LAN-Touchpad.exe
+            windows/dist-installer/LAN-Touchpad-Setup-v2.1.0.exe
+          if-no-files-found: error
+          retention-days: 30
